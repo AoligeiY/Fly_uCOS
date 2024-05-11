@@ -9,8 +9,31 @@ uint8_t Serial_RxFlag;		//接收标志位
 
 extern uint8_t sendBuf[20];
 
-//PA9--USART1_ TX	PA10--USART1_ RX	
+/*	
+以下部分将关闭标准库半主机模式，以在不使用MicroLib的情况下实现printf接口重定向串口
+*/
 
+/* 告知连接器不从C库链接使用半主机的函数 */
+#pragma import(__use_no_semihosting)
+ 
+/* 定义 _sys_exit() 以避免使用半主机模式 */
+void _sys_exit(int x)
+{
+    x = x;
+}
+ 
+/* 标准库需要的支持类型 */
+struct __FILE
+{
+    int handle;
+};
+ 
+FILE __stdout;
+
+
+
+
+//PA9--USART1_ TX	PA10--USART1_ RX	
 void Serial_Init(void)
 {
 	//开启时钟
@@ -141,33 +164,43 @@ void USART1_IRQHandler(void)
 void Send_Senser(int16_t ACC_X, int16_t ACC_Y, int16_t ACC_Z, int16_t GYRO_X,
 					int16_t GYRO_Y, int16_t GYRO_Z, int16_t MAG_X, int16_t MAG_Y, int16_t MAG_Z)
 {
-	uint8_t i,_cnt=0;
-//	char *st = "Data:";
 	
-	sendBuf[_cnt++] = BYTE1(ACC_X);
-	sendBuf[_cnt++] = BYTE0(ACC_X);
-	sendBuf[_cnt++] = BYTE1(ACC_Y);
-	sendBuf[_cnt++] = BYTE0(ACC_Y);
-	sendBuf[_cnt++] = BYTE1(ACC_Z);
-	sendBuf[_cnt++] = BYTE0(ACC_Z);
+	printf("ACC_X:%d ",ACC_X);
+	printf("ACC_Y:%d ",ACC_Y);
+	printf("ACC_Z:%d ",ACC_Z);
+	printf("GYRO_X:%d ",GYRO_X);
+	printf("GYRO_Y:%d ",GYRO_Y);
+	printf("GYRO_Z:%d ",GYRO_Z);
+	printf("MAG_X:%d ",MAG_X);
+	printf("MAG_Y:%d ",MAG_Y);
+	printf("MAG_Z:%d ",MAG_Z);
 	
-	sendBuf[_cnt++] = BYTE1(GYRO_X);
-	sendBuf[_cnt++] = BYTE0(GYRO_X);
-	sendBuf[_cnt++] = BYTE1(GYRO_Y);
-	sendBuf[_cnt++] = BYTE0(GYRO_Y);
-	sendBuf[_cnt++] = BYTE1(GYRO_Z);
-	sendBuf[_cnt++] = BYTE0(GYRO_Z);
 	
-	sendBuf[_cnt++] = BYTE1(MAG_X);
-	sendBuf[_cnt++] = BYTE0(MAG_X);
-	sendBuf[_cnt++] = BYTE1(MAG_Y);
-	sendBuf[_cnt++] = BYTE0(MAG_Y);
-	sendBuf[_cnt++] = BYTE1(MAG_Z);
-	sendBuf[_cnt++] = BYTE0(MAG_Z);
+//	uint8_t i,_cnt=0;
 	
-//	Serial_SendString(st);
-	
-	for(i=0;i<_cnt;i++){
-		Serial_SendByte(sendBuf[i]);
-	}
+//	sendBuf[_cnt++] = BYTE1(ACC_X);
+//	sendBuf[_cnt++] = BYTE0(ACC_X);
+//	sendBuf[_cnt++] = BYTE1(ACC_Y);
+//	sendBuf[_cnt++] = BYTE0(ACC_Y);
+//	sendBuf[_cnt++] = BYTE1(ACC_Z);
+//	sendBuf[_cnt++] = BYTE0(ACC_Z);
+//	
+//	sendBuf[_cnt++] = BYTE1(GYRO_X);
+//	sendBuf[_cnt++] = BYTE0(GYRO_X);
+//	sendBuf[_cnt++] = BYTE1(GYRO_Y);
+//	sendBuf[_cnt++] = BYTE0(GYRO_Y);
+//	sendBuf[_cnt++] = BYTE1(GYRO_Z);
+//	sendBuf[_cnt++] = BYTE0(GYRO_Z);
+//	
+//	sendBuf[_cnt++] = BYTE1(MAG_X);
+//	sendBuf[_cnt++] = BYTE0(MAG_X);
+//	sendBuf[_cnt++] = BYTE1(MAG_Y);
+//	sendBuf[_cnt++] = BYTE0(MAG_Y);
+//	sendBuf[_cnt++] = BYTE1(MAG_Z);
+//	sendBuf[_cnt++] = BYTE0(MAG_Z);
+//	
+//	
+//	for(i=0;i<_cnt;i++){
+//		Serial_SendByte(sendBuf[i]);
+//	}
 }
